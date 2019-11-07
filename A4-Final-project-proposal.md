@@ -14,7 +14,6 @@ For the final project, I will analyze Facebook ads used by the IRA, a Kremlin su
 
 Overall, I am hopeful that this analysis can lead to a clearer picture of how the IRA ads attempted to influence the U.S. political process. As we are now a year away from the 2020 presidential elections, it is important to be able to identify similar patterns or ads we might come across during our social media usage so that they can be reported or dealt with scrutiny.
 
----
 
 ## 🧪 **Data used**
 
@@ -33,7 +32,23 @@ The enigma public group is providing a csv of text extracted from the raw pdf of
 
 The descriptions in the table below were extracted from the Enigma public website. I retroactively added the comments in parentheses.
 
-[Fields and descriptions](https://www.notion.so/c571f94be6b14a10b94999fcdc2e7a10)
+| Field name        | Type    | Description                                                                     |
+| ----------------- | ------- | ------------------------------------------------------------------------------- |
+| Ad Id             | integer | Unique identifier assigned to Facebook advertisement.                           |
+| Ad Text           | string  | Facebook advertisement text.                                                    |
+| Ad Landing Page   | string  | URL to Facebook advertisement landing page.                                     |
+| Ad Targeting      | integer | Facebook advertisement targeting, unparsed.                                     |
+| Ad Impression     | integer | Number of Facebook advertisement impressions.                                   |
+| Ad Clicks         | integer | Number of Facebook advertisement clicks.                                        |
+| Ad Spend          | string  | Money spent on Facebook advertisement in Russian rubbles (RUB).                 |
+| Ad Creation Date  | string  | Date Facebook advertisement was created in MM-DD-YY format.                     |
+| Ad End Date       | string  | Date Facebook advertisement ended in MM-DD-YY format.                           |
+| Target Location   | string  | Facebook advertisement target location. (state origin / state living)           |
+| Target Age        | string  | Facebook advertisement target age.                                              |
+| Target Language   | string  | Facebook advertisement target language. (language(s) spoken by target audience) |
+| Target Placements | string  | Facebook advertisement target placements. (app and location)                    |
+| Target People     | string  | Facebook advertisement target people. (likes)                                   |
+
 
 This data seems to contains the information needed to evaluate the reach, spending and demographics of Facebook users targeted by the IRA's ad campaign. The "Target" fields can be used to understand demographics. The "Ad Spend" can be used to approximate spendings. The Creation and End date can be leverage to examine the density of ads targeting different demographics overtime and the "Ad Impressions" and "Ad Clicks" can inform pure reach (Impressions) and active interactions with the campaign (Clicks).  
 
@@ -45,7 +60,6 @@ The HPSCI website states that the data has been "carefully examined" and that PI
 
 After examination of the dataset and the fields available, I feel comfortable to use it as it contains the advertisement created by the group, but no information linkable to users or their activities. 
 
----
 
 ## ⛈ **Unknowns and dependencies**
 
