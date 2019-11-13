@@ -40,7 +40,7 @@ Due to the potential repercussions and scale of the issue, a lot of work has alr
 
     Two massive studies were conducted by merging the Facebook ads dataset with other sources of data. Below is a summary of their goals and findings.
 
-    - 🔍**[On Microtargeting Socially Divisive Ads: A Case Study of Russia-Linked Ad Campaigns on Facebook](https://arxiv.org/pdf/1808.09218.pdf) - Multiple universities**
+    - 🔍[**On Microtargeting Socially Divisive Ads: A Case Study of Russia-Linked Ad Campaigns on Facebook**](https://arxiv.org/pdf/1808.09218.pdf) **- Multiple universities**
 
         This study focused on three issues:
 
@@ -66,7 +66,7 @@ Due to the potential repercussions and scale of the issue, a lot of work has alr
         - Identified the groups that were more targeted.
         - Analyzed grouping by urls.
         - Analyzed the role of websites redirections.
-- 📱**[The IRA, Social Media and Political Polarization in the United States, 2012-2018](https://comprop.oii.ox.ac.uk/wp-content/uploads/sites/93/2018/12/IRA-Report.pdf) - University of Oxford**
+- 📱[**The IRA, Social Media and Political Polarization in the United States, 2012-2018**](https://comprop.oii.ox.ac.uk/wp-content/uploads/sites/93/2018/12/IRA-Report.pdf) **- University of Oxford**
 
      The study looked at the Facebooks ads dataset and complemented it with facebook posts as well as their own content gathering from Twitter and Youtube. They also looked at the virality of the campaign through shares and likes. They identified that:
 
