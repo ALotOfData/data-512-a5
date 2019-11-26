@@ -22,16 +22,15 @@ regex_dict = {
 
 # Order of these entries is important!
 ordered_targeting_topics_regex = {
-    'location': r'^location\s*?:',
-    'interests': r'^interests\s*?:',
-    'excluded_connections': r'^excluded\s*connections\s*?:',
-    'age': r'^age\s*?:',
-    'language': r'^language\s*?:',
-    'placements': r'^placements\s*?:',
-    'people_who_match': r'^people\s*who\s*match\s*?:'
+    'custom_audience': r'^custom\s*audience\s*:?\s*(?P<custom_audience>.*)',
+    'location': r'^location\s*:?\s*(?P<location>.*)',
+    'interests': r'^interests\s*:?\s*(?P<interests>.*)',
+    'excluded_connections': r'^excluded\s*connections\s*:?\s*(?P<excluded_connections>.*)',
+    'age': r'^age\s*:?\s*(?P<age>.*)',
+    'language': r'^language\s*:?\s*(?P<language>.*)',
+    'placements': r'^placements\s*:?\s*(?P<placements>.*)',
+    'people_who_match': r'^people\s*who\s*match\s*:?\s*(?P<people_who_match>.*)'
 }
-
-people_who_match_interests_regex = r'^people\s*who\s*match\s*?:\s*interest?s\s*?:(?P<interests>.*)'
 
 
 def row_from_file(file_name, file_path, parse_errors_file_dict):
@@ -53,7 +52,8 @@ def row_from_file(file_name, file_path, parse_errors_file_dict):
                                                        parse_errors_file_dict)
 
         # ad_targeting (all ad_targeting is extracted here
-        (ad_targeting_location,
+        (ad_targeting_custom_audience,
+         ad_targeting_location,
          ad_targeting_interests,
          ad_targeting_excluded_connections,
          ad_targeting_age,
@@ -87,6 +87,7 @@ def row_from_file(file_name, file_path, parse_errors_file_dict):
             ad_id,
             ad_text,
             ad_landing_page,
+            ad_targeting_custom_audience,
             ad_targeting_location,
             ad_targeting_interests,
             ad_targeting_excluded_connections,
@@ -136,7 +137,7 @@ def extract_inline(regex_key, file_name, lines, line_index, parse_errors_file_di
 
     if matches is not None:
         group_dict = matches.groupdict()
-        to_extract = group_dict[regex_key] if regex_key in group_dict else None
+        to_extract = group_dict.get(regex_key)
 
     # Add to fail to parse dictionary if regex was not comprehensive
     if to_extract is None:
@@ -156,9 +157,10 @@ def extract_ad_targeting(file_name, lines, line_index, parse_errors_file_dict):
     topic_dictionary = get_topic_dictionary(targeting_lines) if targeting_lines else dict()
 
     # Step 3) assign topic dictionary entry to variables (get defaults to None)
+    ad_targeting_custom_audience = topic_dictionary.get('custom_audience')
     ad_targeting_location = topic_dictionary.get('location')
     ad_targeting_interests = topic_dictionary.get('interests')
-    ad_targeting_excluded_connections = topic_dictionary.get('excluded excluded_connections')
+    ad_targeting_excluded_connections = topic_dictionary.get('excluded_connections')
     ad_targeting_age = topic_dictionary.get('age')
     ad_targeting_language = topic_dictionary.get('language')
     ad_targeting_placements = topic_dictionary.get('placements')
@@ -166,7 +168,8 @@ def extract_ad_targeting(file_name, lines, line_index, parse_errors_file_dict):
 
     # Step 4) add parse errors
 
-    return (ad_targeting_location,
+    return (ad_targeting_custom_audience,
+            ad_targeting_location,
             ad_targeting_interests,
             ad_targeting_excluded_connections,
             ad_targeting_age,
@@ -177,15 +180,20 @@ def extract_ad_targeting(file_name, lines, line_index, parse_errors_file_dict):
 
 
 def extract_targeting_lines(lines, line_index):
+    targeting_lines = []
+
     # Step 1) check that the current line is the targeting line
     matches = re.search(regex_dict['ad_targeting'], lines[line_index], flags=re.IGNORECASE)
     if matches is None:
         return None, line_index
+    else:
+        location = matches.groupdict()['ad_targeting']
+        targeting_lines.append(location)
+        line_index += 1
 
     # Step 2) get lines
     next_line_index = line_index
     match_found = False
-    targeting_lines = []
     while next_line_index < len(lines) and not match_found:
         line = lines[next_line_index]
         matches = re.search(regex_dict['ad_impressions'], line, flags=re.IGNORECASE)
@@ -198,7 +206,7 @@ def extract_targeting_lines(lines, line_index):
 
     if not match_found:
         targeting_lines = None
-        parse_errors_file_dict['ad_filters'].append(file_name)
+        parse_errors_file_dict['ad_targeting'].append(file_name)
 
     return targeting_lines, next_line_index if match_found else line_index
 
@@ -211,28 +219,33 @@ def get_topic_dictionary(targeting_lines):
         line = targeting_lines[i]
 
         for topic, regex in topic_regex.items():
-            matches = re.search(regex, line)
+            matches = re.search(regex, line, flags=re.IGNORECASE)
 
-            if matches:
+            if matches and matches.groupdict():
+                # current_topic can match until new topic is found
                 current_topic = topic
 
+                # remove topic name from value using groups
+                group_dict = matches.groupdict()
+                line = group_dict.get(topic)
+
                 # Once a topic is found it is removed
-                topic_regexes.pop(topic)
+                topic_regex.pop(topic)
                 break
 
         if current_topic is None:
             return None
 
         if current_topic in topic_text_dictionary:
-            topic_tex[current_topic] += line.replace('\n')
+            topic_text_dictionary[current_topic] += (' ' + line.replace('\n', ''))
         else:
-            topic_text_dictionary[current_topic] = line.replace('\n')
+            topic_text_dictionary[current_topic] = line if line is not None else ''
 
     return topic_text_dictionary
 
 
 input_path = '../raw_data/txt_files/'
-output_path = '../raw_data/'
+output_path = '../raw_data/raw.csv'
 
 # Get all txt files under path
 file_paths = []
@@ -241,6 +254,8 @@ parse_errors_file_dict = {
     'ad_id': [],
     'ad_text': [],
     'ad_landing_page': [],
+    'ad_targeting': [],
+    'ad_targeting_custom_audience': [],
     'ad_targeting_location': [],
     'ad_targeting_interests': [],
     'ad_targeting_excluded_connections': [],
@@ -268,17 +283,18 @@ df = pd.DataFrame(all_rows, columns=[
     'ad_id',
     'ad_text',
     'ad_landing_page',
+    'ad_targeting_custom_audience',
     'ad_targeting_location',
     'ad_targeting_interests',
     'ad_targeting_excluded_connections',
     'ad_targeting_age',
     'ad_targeting_language',
     'ad_targeting_placements',
-    'ad_filters'
+    'ad_targeting_people_who_match',
     'ad_impressions',
     'ad_clicks',
     'ad_spend',
     'ad_creation_date',
     'ad_end_date'
 ])
-df
+df.to_csv(output_path)
