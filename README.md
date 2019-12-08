@@ -1,36 +1,57 @@
-# A5: Facebook's Russian ads analysis
+# A5: 2016 Facebook's Russian ads analysis
 
 Name: Benjamin Brodeur Mathieu
-Date: 11/05/2019
+Date: 12/07/2019
 
-## Goal
+## Abstract
 
+This analysis reviews the IRA's (Internet Research Agency) use of Facebook ads to further their political agenda by interfering with the 2016 US presidential election. We first examined whether some of the targeted demographics were more or less engaged with the IRA ads. It was found that nearly all demographics were at lest four times more likely to engage with an IRA ad than the average Facebook ad. The demographics most likely to interact were Mexican-Americans, Native-Americans and African-Americans while the least likely to interact were Self-Defense (Martial arts) advocacy groups, Muslim-Americans and groups who interested in free music software.
+
+We then examined how different demographics had been targeted near important political events. Our findings suggests that the IRA infiltrated and created Facebook groups and communities which caused discord in public political discourse. These same groups obtained credibility by creating rallies and events on the ground in the United-States. Some groups ultimately leveraged their following to spread messages meant to suppress voter turnout near election day.
+
+This analysis complements other studies on the subject by using a primarily human-centered approach. Using a purely algorithmic method to cluster the demographics would have lost the richness of cultural associations the IRA leveraged to target the groups. Similarly, spikes in data were put in the context of these demographics and the political events.
 
 ## Repository structure
 ```
+├── A4-Final-project-proposal.md
+├── A5-Final-project-plan.md
 ├── LICENSE
 ├── README.md
 ├── assets
 │   └── pictures
-│       └── ad_preview.png
 ├── clean_data
+│   ├── clean_data.csv
+│   └── labeled_clean_data.csv
 ├── raw_data
+│   ├── 2015-06
+│       ├── P(1)0000054.pdf
+│   ├── txt_files
+│   └── raw.csv
 └── src
+    ├── [TEST]_k_means_demographic_labeling.ipynb
+    ├── analysis.ipynb
+    ├── data_cleaning.ipynb
+    ├── demographic_labeling.ipynb
+    └── pdf_data_extraction.ipynb
 ```
 
-| File                                          | Description                                                                                                              |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| LICENSE                                       | Code license                                                                                                             |
-| README.md                                     | This readme.                                                                                                             |
-| artifacts/data/ores_not_found.csv             | Entries in our dataset for which there were no article quality given by the [ORES](https://www.mediawiki.org/wiki/ORES). |
-| artifacts/images/coverage.png                 | Coverage table screenshot. The table was created as part of analysis.                                                    |
-| artifacts/images/relative_quality.png         | Relative article quality table screenshot. The table was created as part of the analysis.                                |
-| clean_data/wp_wpds_countries_no_match.csv     | Article entries for which no match were found in the country's population list.                                          |
-| clean_data/wp_wpds_politicians_by_country.csv | Article entries including quality rating and country's population.                                                       |
-| human.yml                                     | [conda](https://docs.conda.io/en/latest/) environement file                                                              |
-| raw_data/WPDS_2018_data.csv                   | Population resource bureau, mid-2018 population by country                                                               |
-| raw_data/page_data.csv                        | Wikipedia politicians by country dataset                                                                                 |
-| src/Whcds-a2-bias.ipynb                       | IPython notebook containing analysis (explanations and code)                                                             |
+| File                                          | Description                                                                                                |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| A4-Final-project-proposal.md                  | Original proposal for this assignment.                                                                     |
+| A5-Final-project-plan.md                      | Improved final plan for this assignment.                                                                   |
+| LICENSE                                       | Code license                                                                                               |
+| README.md                                     | This readme.                                                                                               |
+| assets/pictures/                              | Directory containing the various images displayed in the analysis notebook                                 |
+| clean_data/clean_data.csv                     | CSV file containing a cleaned version of our dataset.                                                      |
+| clean_data/labeled_clean_data.csv             | CSV file containing a cleaned version of our dataset, with the addition of a demographic column.           |
+| raw_data/2015-06/P(1)0000054.pdf              | Sample ad that can be used to test the pdf_data_extraction.ipynb.                                          |
+| raw_data/txt_files/*                          | Text files of the first page of every ad pdf. Generated by the pdf_data_extraction.ipynb.                  |
+| raw_data/raw.csv                              | Raw data obtained by parsing txt_files in pdf_data_extraction.ipynb. Primary input of data_cleaning.ipynb. |
+| src/[TEST]_k_means_demographic_labeling.ipynb | Contains an attempt at using k-means and tfidf to add demographic labels to the IRA ads.                   |
+| src/analysis.ipynb                            | Contains the report and analysis code / visualizations.                                                    |
+| src/data_cleaning.ipynb                       | Contains the logic to clean `raw.csv` produces `clean_data.csv`.                                           |
+| src/demographic_labeling.ipynb                | Contains the logic to add the "demographic" column to `clean_data.csv`.                                    |
+| src/pdf_data_extraction.ipynb                 | Contains data extraction from pdf to txt to `raw.csv`.                                                     |
 
 ## Data sources used
 
@@ -60,9 +81,10 @@ Each pdf files contained two pages. A first page with the description of the ad 
 * Data was accessed on 11/05/2019
 * Released under a public license
 
-### How to obtain the raw_data provided
+### How to obtain the raw_data
 
-After downloading and extracting the zip files and placing them under raw_data:
+1. Download the ads from the [HSPCI](https://intelligence.house.gov/social-media-content/social-media-advertisements.htm) website
+2. Place the unzipped files according to the directory structure below under the raw_data folder:
 
 ```
 ./raw_data/
@@ -79,12 +101,32 @@ After downloading and extracting the zip files and placing them under raw_data:
 └── 2017-q3
 ```
 
-Make sure to place them under raw_data before running the .ipynb notebook.
+3. Follow the instructions below to run the pdf_data_extraction.ipynb notebook.
+
+## How to run the notebook
+
+You will need a computer with access to the internet and access to a command line which has the required privileges to install open-source software.
+
+> The human.yml file was created on OSX and will not work on linux or windows. If you are not on OSX, install the dependencies manually.
+
+1. Install [conda or miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
+2. [Replicate the conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file) using the human.yml file provided by running: `conda env create -f RussianAds.yml`
+3. Activate the environment with: `conda activate RussianAds`
+4. Using a terminal or cmd, navigate to the src folder.
+5. Lauch jupyter by running: `jupyter notebook`
+6. Select the notebook of interest. (Start at `pdf_data_extraction.ipynb` for the full process or `analysis.ipynb` for the final report.)
 
 ## Bias
 
+* We know from various sources and studies that the ads provided by Facebook are likely to only represent a fraction of the ads created by the IRA and other groups.
+* The ads were not all perfectly formatted. Some ads were simply not processed beyond basic parsing for this reason.
+* Ads lacking a start date were not analyzed.
+* Ads without a spending amount, impressions and/or clicks were also excluded as it is unlikely that these were published on the platform at all.
+* The process by which demographics were clustered is subjective, however this project attempted to give a transparent account of how these demographics were created from the dataset.
+* The analysis is biased by my desire to create a narrative that summarizes my findings and is easy to follow, in reality many ads were nonsensical or difficult to interpret without further research.
 
 ## Resources used
+
 This analysis was prepared using Python 3.7.5 running in a Jupyter Notebook environment.  
 Documentation for Python can be found here: https://docs.python.org/3.7/  
 Documentation for Jupyter Notebook can be found here: http://jupyter-notebook.readthedocs.io/en/latest/  
@@ -96,41 +138,38 @@ The following Python packages were used and their documentation can be found at 
 * [pandas](https://pandas.pydata.org/)
 * [numpy](https://numpy.org/)
 * [IPython](https://ipython.org/)
+* [matplotlib](https://matplotlib.org/)
+* [seaborn](https://seaborn.pydata.org/)
 
 ## Files Created
-This notebook creates 2 CSV files of data extracted and compiled as part of this analysis.
 
-* clean_data/wp_wpds_countries-no_match.csv 
-* clean_data/wp_wpds_politicians_by_country.csv
+This notebooks create 3 CSV files of data extracted and compiled as part of this analysis.
 
-Both share the same schema, some rows will have missing values in the no_match file.
+* raw_data/raw.csv
+* clean_data/clean_data.csv
+* clean_data/labeled_clean_data.csv
 
-| Column          | Description                                                                                                   | Data type |
-| --------------- | ------------------------------------------------------------------------------------------------------------- | --------- |
-| article_name    | The unsanitized page tytpe                                                                                    | string    |
-| country         | sanitized country name, extracted from the category name                                                      | string    |
-| revision_id     | edit ID of the last edit to the page                                                                          | string    |
-| article_quality | An appoximation of article quality given by the ORES api learn more [here](https://github.com/wikimedia/ores) | string    |
-| population      | Population in millions (thousands are comma separated)                                                        | string    |
+The 3 files share a very similar schema. Here are the notable exceptions:
 
-## How to run the notebook
+* The `ad_age` and `ad_targeting_people_who_match` columns are only available in the `raw.csv` file.
+* The Data type for all columns of the `raw.csv` is string.
+* The `demographic` column is only available in the `labeled_clean_data.csv` file.
 
-You will need a computer with access to the internet and access to a command line which has the required privileges to install open-source software.
+| Column                        | Description | Data type                                                                                      |
+| ----------------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
+| file_name                     | string      | Unique pdf file name                                                                           |
+| ad_targeting_interests        | string      | Interests used to target users                                                                 |
+| ad_impressions                | int         | Number of users who saw the ads                                                                |
+| ad_clicks                     | int         | Number of times the ads was clicked                                                            |
+| ad_spend                      | float       | Money spent on the ad in RUB                                                                   |
+| ad_creation_date              | datetime    | Creation date of the ad                                                                        |
+| ad_end_date                   | datetime    | Date at which the ad stopped                                                                   |
+| demographic                   | string      | Demographic of group targeted by the ad based on analysis of the ad_targeting_interests column |
+| ad_age                        | string      | Age range used for ad targeting. (Only in `raw.csv`)                                           |
+| ad_targeting_people_who_match | string      | Ad targeting used with the "people who match" filtering.                                       |
 
-> The human.yml file was created on OSX and will not work on linux or windows. If you are not on OSX, install the dependencies manually.
+## Course wiki
 
-1. Install [conda or miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
-2. [Replicate the conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file) using the human.yml file provided by running: `conda env create -f human.yml`
-3. Activate the environment with: `conda activate human`
-4. Using a terminal or cmd, navigate to the src folder.
-5. Lauch jupyter by running: `jupyter notebook`
-6. Select the hcds-a2-data-curation notebook.
+This analysis was conducted in the context of Data-512A Human-Centered Data-Science, University of Washington.
 
-## Observations
-
-* Looking at the dataset more closely, we can see that more than 10 countries have no articles about a politician which obtained a quality rating of "FA" or "GA".
-* Having very few articles makes it easy for a contributor to go and increase the relative_quality rating for a given country.
-* Many of the countries having poor relative quality ratings also have a few number of articles.
-* When looking at the region table, we see that the Northern America has the highest relative quality rating. This may be due to having a large number of english native speakers.
-
-## Reflection
+[Course wiki](https://wiki.communitydata.science/Human_Centered_Data_Science_(Fall_2019))
