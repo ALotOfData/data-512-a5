@@ -18,6 +18,7 @@ This analysis complements other studies on the subject by using a primarily huma
 ├── A5-Final-project-plan.md
 ├── LICENSE
 ├── README.md
+├── RussianAds.yml
 ├── assets
 │   └── pictures
 ├── clean_data
@@ -42,6 +43,7 @@ This analysis complements other studies on the subject by using a primarily huma
 | A5-Final-project-plan.md                      | Improved final plan for this assignment.                                                                   |
 | LICENSE                                       | Code license                                                                                               |
 | README.md                                     | This readme.                                                                                               |
+| RussianAds.yml                                | Conda environment definition file. Generated on MacOSX Catalina.                                           |
 | assets/pictures/                              | Directory containing the various images displayed in the analysis notebook                                 |
 | clean_data/clean_data.csv                     | CSV file containing a cleaned version of our dataset.                                                      |
 | clean_data/labeled_clean_data.csv             | CSV file containing a cleaned version of our dataset, with the addition of a demographic column.           |
